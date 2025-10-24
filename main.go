@@ -25,7 +25,7 @@ func main() {
 		case "1":
 			service.OrderService()
 		case "2":
-			
+			service.HistoryOrder()
 		case "0":
 			utils.ClearScreen()
 			fmt.Println("Terima kasih! Datang Kembali.")
