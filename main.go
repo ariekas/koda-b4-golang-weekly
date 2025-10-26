@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"os"
 	"weekly/src/service"
-	"weekly/utils"
 )
 
 func main() {
 	for {
-		utils.ClearScreen()
+		fmt.Print("\x1bc")
 		fmt.Println("=== Welcome To Pizza ===")
 		fmt.Println(`
 	Menu :
@@ -27,7 +26,7 @@ func main() {
 		case "2":
 			service.HistoryOrder()
 		case "0":
-			utils.ClearScreen()
+			fmt.Print("\x1bc")
 			fmt.Println("Terima kasih! Datang Kembali.")
 			os.Exit(0)
 		default:

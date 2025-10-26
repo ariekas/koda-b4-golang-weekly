@@ -5,14 +5,13 @@ import (
 	"math/rand"
 	"time"
 	"weekly/data"
-	"weekly/utils"
 )
 
 func OrderService() {
 	var choise, quantity int
 
 	for {
-		utils.ClearScreen()
+		fmt.Print("\x1bc")
 		fmt.Println("=== Menu ===")
 		for i, menu := range data.Menus {
 			fmt.Printf("%d. %s - Rp %.0f \n", i+1, menu.Name, menu.Price)
@@ -34,6 +33,7 @@ func OrderService() {
 		if choise < 1 || choise > len(data.Menus) {
 			fmt.Println("Nomor menu tidak tersedia!")
 			fmt.Scanln()
+			continue
 		}
 
 		fmt.Print("Masukan jumlah yang di beli! ")
@@ -59,9 +59,9 @@ func CheckoutService() {
 	var quantity, nomerOrder int
 	var custumer string
 
-	utils.ClearScreen()
+	fmt.Print("\x1bc")
 	for {
-		utils.ClearScreen()
+		fmt.Print("\x1bc")
 
 		fmt.Println("=== Detail Pesanan ===")
 		for i, menu := range data.Orders {
@@ -80,9 +80,11 @@ Pilih Menu !
 		fmt.Scan(&choiseMenu)
 
 		if choiseMenu == 0 {
-			utils.ClearScreen()
+
+			fmt.Print("\x1bc")
+
 			fmt.Println("Kembali ke menu home")
-			
+
 			return
 		}
 		switch choiseMenu {
@@ -114,7 +116,9 @@ Pilih Menu !
 			data.Orders[nomerOrder-1].Quantity = quantity
 			fmt.Println("Quantity berhasil diperbarui!")
 		case 3:
-			utils.ClearScreen()
+
+			fmt.Print("\x1bc")
+
 			fmt.Print("Masukan nama pelanggan : ")
 			fmt.Scan(&custumer)
 			var total float64
@@ -137,7 +141,8 @@ Pilih Menu !
 			data.Transactions = append(data.Transactions, transaction)
 			data.Orders = nil
 
-			utils.ClearScreen()
+			fmt.Print("\x1bc")
+
 			fmt.Println("\n=== Transaksi Berhasil! ===")
 			fmt.Printf("Order ID: %s\nNama: %s\nTotal: Rp %.0f\nTanggal: %s\n",
 				transaction.OrderID, transaction.Custemer, transaction.Total,

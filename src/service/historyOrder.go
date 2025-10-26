@@ -3,13 +3,12 @@ package service
 import (
 	"fmt"
 	"weekly/data"
-	"weekly/utils"
 )
 
 func HistoryOrder() {
 	var choise, choiseMenu int
 
-	utils.ClearScreen()
+	fmt.Print("\x1bc")
 	fmt.Println("=== History Order ===")
 	if len(data.Transactions) == 0 {
 		fmt.Println("Belum ada transaksi.")
@@ -42,7 +41,7 @@ func HistoryOrder() {
 		}
 
 		selectedTransaction := data.Transactions[choise-1]
-		utils.ClearScreen()
+		fmt.Print("\x1bc")
 		PrintStruk(selectedTransaction)
 
 		fmt.Println("\nTekan ENTER untuk kembali ke menu utama...")
