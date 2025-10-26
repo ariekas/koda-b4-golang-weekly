@@ -1,0 +1,43 @@
+name: Build Golang App
+run-name: Building golang app for 3 major platform
+on: 
+    push:
+        tags:
+            - "v*"
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - name: Build app for windows amd64
+        run: GOOS=windows GOARCH=amd64 go build -o playground_windows_amd64.exe .
+      - name: Build app for linux amd64
+        run: GOOS=linux GOARCH=amd64 go build -o playground_linux_amd64 .
+      - name: Build app for linux arm64
+        run: GOOS=linux GOARCH=arm64 go build -o playground_linux_arm64 .
+      - name: Build app for darwin arm64
+        run: GOOS=darwin GOARCH=arm64 go build -o playground_darwin_arm64 .
+      - name: Upload artifact for windows
+        uses: actions/upload-artifact@v4
+        with:
+          name: playground_windows_amd64
+          path: ./playground_windows_amd64.exe
+
+      - name: Upload artifact for linux arm64
+        uses: actions/upload-artifact@v4
+        with:
+          name: playground_linux_arm64
+          path: ./playground_linux_arm64
+
+      - name: Upload artifact for linux amd64
+        uses: actions/upload-artifact@v4
+        with:
+          name: playground_linux_amd64
+          path: ./playground_linux_amd64
+
+      - name: Upload artifact for darwin
+        uses: actions/upload-artifact@v4
+        with:
+          name: playground_darwin_arm64
+          path: ./playground_darwin_arm64
