@@ -3,10 +3,25 @@ package main
 import (
 	"fmt"
 	"os"
+	"weekly/data"
 	"weekly/src/service"
 )
 
 func main() {
+	defer func() {
+		r := recover()
+
+		if r != nil {
+			fmt.Println("Error :", r)
+			os.Exit(1)
+		}
+	}()
+
+	// Var untuk mengambil struct Db dari package service
+	var d *service.Db = &service.Db{
+		Transactions: []data.Transaction{},
+		Orders: []data.Order{},
+	}
 	for {
 		fmt.Print("\x1bc")
 		fmt.Println("=== Welcome To Pizza ===")
@@ -22,9 +37,9 @@ func main() {
 		fmt.Scan(&input)
 		switch input {
 		case "1":
-			service.OrderService()
+			d.OrderService()
 		case "2":
-			service.HistoryOrder()
+			d.HistoryOrder()
 		case "0":
 			fmt.Print("\x1bc")
 			fmt.Println("Terima kasih! Datang Kembali.")

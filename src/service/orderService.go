@@ -7,14 +7,29 @@ import (
 	"weekly/data"
 )
 
-func OrderService() {
+// Struct yang berisi var yang tipe data nya slice []data.Transaction/Order yang di dapat dari package data
+type Db struct {
+	Transactions []data.Transaction
+	Orders       []data.Order
+}
+
+type ShowData interface{
+	PrintProduct(i int)
+}
+
+func Print (s ShowData, i int){
+	s.PrintProduct(i)
+}
+
+// Method
+func (d *Db) OrderService() {
 	var choise, quantity int
 
 	for {
 		fmt.Print("\x1bc")
 		fmt.Println("=== Menu ===")
 		for i, menu := range data.Menus {
-			fmt.Printf("%d. %s - Rp %.0f \n", i+1, menu.Name, menu.Price)
+			Print(menu, i)
 		}
 
 		fmt.Println("\n \n99. Lanjut")
@@ -39,6 +54,10 @@ func OrderService() {
 		fmt.Print("Masukan jumlah yang di beli! ")
 		fmt.Scan(&quantity)
 
+		if quantity > 50 {
+			panic(fmt.Sprintf("Jumlah yang dimasukan melebihi batas, %d", quantity))
+		}
+
 		selecteMenu := data.Menus[choise-1]
 
 		order := data.Order{
@@ -46,15 +65,16 @@ func OrderService() {
 			Quantity: quantity,
 		}
 
-		data.Orders = append(data.Orders, order)
+		d.Orders = append(d.Orders, order)
 
 		fmt.Println(selecteMenu.Name+" Dibeli sebanyak ", quantity)
 		fmt.Scanln()
 	}
-	CheckoutService()
+	d.CheckoutService()
 }
 
-func CheckoutService() {
+// Method
+func (d *Db) CheckoutService() {
 	var choiseMenu int
 	var quantity, nomerOrder int
 	var custumer string
@@ -64,10 +84,7 @@ func CheckoutService() {
 		fmt.Print("\x1bc")
 
 		fmt.Println("=== Detail Pesanan ===")
-		for i, menu := range data.Orders {
-			fmt.Printf("%d.\nProduct: %s\nPrice: Rp %.0f\nQuantity: %d\n\n",
-				i+1, menu.Item.Name, menu.Item.Price, menu.Quantity)
-		}
+		for i, menu := range d.Orders {Print(menu, i)}
 		fmt.Println(`
 1. Menghapus pesanan
 2. Edit Pesanan
@@ -92,19 +109,19 @@ Pilih Menu !
 			fmt.Println("Masukan Nomer pesanan: ")
 			fmt.Scan(&nomerOrder)
 
-			if nomerOrder < 1 || nomerOrder > len(data.Orders) {
+			if nomerOrder < 1 || nomerOrder > len(d.Orders) {
 				fmt.Println("Nomor pesanan tidak valid.")
 				fmt.Scanln()
 				continue
 			}
 
-			data.Orders = append(data.Orders[:nomerOrder-1], data.Orders[nomerOrder:]...)
+			d.Orders = append(d.Orders[:nomerOrder-1], d.Orders[nomerOrder:]...)
 			fmt.Println("Pesanan berhasil di hapus !")
 		case 2:
 			fmt.Print("Masukan nomor pesanan : ")
 			fmt.Scan(&nomerOrder)
 
-			if nomerOrder < 1 || nomerOrder > len(data.Orders) {
+			if nomerOrder < 1 || nomerOrder > len(d.Orders) {
 				fmt.Println("Nomor pesanan tidak valid.")
 				fmt.Scanln()
 				continue
@@ -113,7 +130,7 @@ Pilih Menu !
 			fmt.Print("Masukan jumlah baru untuk pesanan ini: ")
 			fmt.Scan(&quantity)
 
-			data.Orders[nomerOrder-1].Quantity = quantity
+			d.Orders[nomerOrder-1].Quantity = quantity
 			fmt.Println("Quantity berhasil diperbarui!")
 		case 3:
 
@@ -122,7 +139,7 @@ Pilih Menu !
 			fmt.Print("Masukan nama pelanggan : ")
 			fmt.Scan(&custumer)
 			var total float64
-			for _, o := range data.Orders {
+			for _, o := range d.Orders {
 				total += o.Item.Price * float64(o.Quantity)
 			}
 
@@ -133,13 +150,13 @@ Pilih Menu !
 			transaction := data.Transaction{
 				OrderID:   orderID,
 				Custemer:  custumer,
-				Order:     data.Orders,
+				Order:     d.Orders,
 				Total:     total,
 				DateOrder: time.Now(),
 			}
 
-			data.Transactions = append(data.Transactions, transaction)
-			data.Orders = nil
+			d.Transactions = append(d.Transactions, transaction)
+			d.Orders = nil
 
 			fmt.Print("\x1bc")
 

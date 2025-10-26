@@ -1,6 +1,9 @@
 package data
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type MenuItem struct{
 	ID int
@@ -28,6 +31,14 @@ type Transaction struct{
 	DateOrder time.Time
 }
 
-var Transactions []Transaction
 
-var Orders []Order
+func (m MenuItem) PrintProduct(i int){
+	fmt.Printf("%d. %s - Rp %.0f \n", i+1, m.Name, m.Price)
+}
+
+func (o Order) PrintProduct(i int){
+	fmt.Printf("%d.\nProduct: %s\nPrice: Rp %.0f\nQuantity: %d\n\n",
+	i+1, o.Item.Name, o.Item.Price, o.Quantity)
+}
+
+
