@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"weekly/src/utils"
 )
 
 func FecthData(path string) ([]MenuItem, error) {
@@ -52,7 +53,7 @@ func GetData() ([]MenuItem, error) {
 	if err == nil {
 		// menghitung sudah berapa lama durasi waktu sejak file data.json
 		getCreateAt := time.Since(createAt.ModTime())
-		if getCreateAt >= 15*time.Second {
+		if getCreateAt >= time.Duration(utils.Time()) {
 			return FecthData(getData)
 		} else {
 			// Membaca file data.json
