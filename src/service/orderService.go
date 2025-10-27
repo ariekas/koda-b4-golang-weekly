@@ -24,11 +24,16 @@ func Print (s ShowData, i int){
 // Method
 func (d *Db) OrderService() {
 	var choise, quantity int
+	var menus, error = data.GetData()
+
+	if error != nil {
+		fmt.Println("Error: Failed to getting data product")
+	}
 
 	for {
 		fmt.Print("\x1bc")
 		fmt.Println("=== Menu ===")
-		for i, menu := range data.Menus {
+		for i, menu := range menus {
 			Print(menu, i)
 		}
 
@@ -45,7 +50,7 @@ func (d *Db) OrderService() {
 			return
 		}
 
-		if choise < 1 || choise > len(data.Menus) {
+		if choise < 1 || choise > len(menus) {
 			fmt.Println("Nomor menu tidak tersedia!")
 			fmt.Scanln()
 			continue
@@ -58,7 +63,7 @@ func (d *Db) OrderService() {
 			panic(fmt.Sprintf("Jumlah yang dimasukan melebihi batas, %d", quantity))
 		}
 
-		selecteMenu := data.Menus[choise-1]
+		selecteMenu := menus[choise-1]
 
 		order := data.Order{
 			Item:     selecteMenu,

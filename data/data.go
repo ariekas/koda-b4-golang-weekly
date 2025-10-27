@@ -1,23 +1,43 @@
 package data
 
 import (
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 	"time"
 )
 
+func GetData() ([]MenuItem, error){
+	resp, err := http.Get("https://raw.githubusercontent.com/ariekas/koda-b4-golang-weekly-data/refs/heads/main/dataProduct.json")
+
+	if err != nil {
+		fmt.Println("Error: Failed to Fecth data")
+	}
+
+	body, err := io.ReadAll(
+		resp.Body,
+	)
+
+	var menus []MenuItem
+
+	if err != nil {
+		fmt.Println("Failed to raid body")
+	}
+
+	err = json.Unmarshal(body, &menus)
+	if err != nil {
+		fmt.Println("Failed to converd data")
+	}
+
+	return menus, nil
+}
 type MenuItem struct{
 	ID int
 	Name string
 	Price float64
 	Category string
 }
-
-var Menus = []MenuItem{
-	{ID: 1, Name: "Nasi", Price: 5000, Category: "Makanan"},
-	{ID: 2, Name: "Teh", Price: 2000, Category: "Minuman"},
-	{ID: 3, Name: "Sate", Price: 10000, Category: "Makanan"},
-}
-
 type Order struct{
 	Item MenuItem
 	Quantity int
