@@ -37,13 +37,32 @@ func (d *Db) OrderService() {
 			Print(menu, i)
 		}
 
-		fmt.Println("\n \n99. Lanjut")
+		fmt.Println("\n \n98. Cari produk")
+		fmt.Println("99. Lanjut")
 		fmt.Println("0. Kembali")
 
 		fmt.Print("Masukan No Menu yang di pilih! ")
 		fmt.Scan(&choise)
 		if choise == 99 {
 			break
+		}
+
+		if choise == 98 {
+			var keyword string
+			fmt.Print("Masukkan kata kunci pencarian: ")
+			fmt.Scan(&keyword)
+	
+			results := data.SearchMenu(menus, keyword)
+			if len(results) == 0 {
+				fmt.Println("Tidak ada hasil ditemukan.")
+			} else {
+				fmt.Println("=== Hasil Pencarian ===")
+				for i, menu := range results {
+					Print(menu, i)
+				}
+			}
+			fmt.Scanln()
+			continue
 		}
 		if choise == 0 {
 			fmt.Println("Kembali ke menu utama...")
