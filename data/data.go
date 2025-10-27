@@ -52,7 +52,7 @@ func GetData() ([]MenuItem, error) {
 	if err == nil {
 		// menghitung sudah berapa lama durasi waktu sejak file data.json
 		getCreateAt := time.Since(createAt.ModTime())
-		if getCreateAt >= 15*time.Minute {
+		if getCreateAt >= 15*time.Second {
 			return FecthData(getData)
 		} else {
 			// Membaca file data.json
