@@ -34,7 +34,7 @@ func (d *Db) OrderService() {
 		}
 
 		fmt.Println("\n \n98. Cari produk")
-		fmt.Println("99. Lanjut")
+		fmt.Println("99. Order")
 		fmt.Println("0. Kembali")
 
 		fmt.Print("Masukan No Menu yang di pilih! ")
@@ -78,6 +78,10 @@ func (d *Db) OrderService() {
 			panic(fmt.Sprintf("Jumlah yang dimasukan melebihi batas, %d", quantity))
 		}
 
+		if quantity < 0 {
+			panic(fmt.Sprintf("Jumlah yang tidak boleh kurang dari 0, %d", quantity))
+		}
+
 		selecteMenu := menus[choise-1]
 
 		order := data.Order{
@@ -104,7 +108,13 @@ func (d *Db) CheckoutService() {
 		fmt.Print("\x1bc")
 
 		fmt.Println("=== Detail Pesanan ===")
-		for i, menu := range d.Orders {Print(menu, i)}
+		if len(d.Orders) == 0 {
+			fmt.Println("Tidak ada data order")
+		} else {
+			for i, menu := range d.Orders {
+				Print(menu, i)
+			}
+		}		
 		fmt.Println(`
 1. Menghapus pesanan
 2. Edit Pesanan

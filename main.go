@@ -29,7 +29,6 @@ func main() {
 	Menu :
 	1. Menu
 	2. History Order
-	3. Opsion
 
 
 	0. Exit
@@ -42,8 +41,8 @@ func main() {
 			d.OrderService()
 		case "2":
 			d.HistoryOrder()
-		case "3":
-			service.Opsion()
+		// case "3":
+		// 	service.Opsion()
 		case "0":
 			fmt.Print("\x1bc")
 			fmt.Println("Terima kasih! Datang Kembali.")

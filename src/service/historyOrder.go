@@ -19,7 +19,7 @@ func (d *Db) HistoryOrder() {
 		fmt.Printf("%d %s - Tanggal: %s \n Nama: %s | Total: Rp %.0f \n\n",
 			i+1, transaction.OrderID, transaction.DateOrder.Format("02-Jan-2006 15:04"), transaction.Custemer, transaction.Total)
 	}
-	fmt.Println("1. Cetaik Struk")
+	fmt.Println("1. Cetak Struk")
 	fmt.Println("0. Kembali")
 
 	fmt.Print("\nPilih Menu: ")
