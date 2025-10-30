@@ -1,86 +1,119 @@
 package data
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"time"
-	"weekly/src/utils"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/joho/godotenv"
 )
 
-func FecthData(path string) ([]MenuItem, error) {
-	resp, err := http.Get("https://raw.githubusercontent.com/ariekas/koda-b4-golang-weekly-data/refs/heads/main/dataProduct.json")
-
-	if err != nil {
-		fmt.Println("Error: Failed to Fecth data")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(
-		resp.Body,
-	)
-
-	var menus []MenuItem
-
-	if err != nil {
-		fmt.Println("Failed to raid body")
-	}
-
-	err = json.Unmarshal(body, &menus)
-	if err != nil {
-		fmt.Println("Failed to converd data")
-	}
-
-	os.WriteFile(path, body, 0644)
-
-	fmt.Println("Data berhasil disimpan ke:", path)
-	return menus, nil
-}
-
-func GetData() ([]MenuItem, error) {
-	// Menuju file temporary
-	tempDir := os.TempDir()
-	// Membaca file temporary apakah ada file data.json
-	getData := filepath.Join(tempDir, "data.json")
-
-	// Membaca waktu file data.json dibuat pertama kali
-	createAt, err := os.Stat(getData)
-
-	// data.json nya ada
-	if err == nil {
-		// menghitung sudah berapa lama durasi waktu sejak file data.json
-		getCreateAt := time.Since(createAt.ModTime())
-		if getCreateAt >= time.Duration(utils.Time()) {
-			return FecthData(getData)
-		} else {
-			// Membaca file data.json
-			data, err := os.ReadFile(getData)
-			if err != nil {
-				return nil, fmt.Errorf("failed to read cached data: %v", err)
-			}
-
-			var menus []MenuItem
-			// Mengubah file json menjadi slice
-			json.Unmarshal(data, &menus)
-			return menus, nil
-		}
-	}
-
-	// data.json nya tidak ada
-	return FecthData(getData)
-}
-
 type MenuItem struct {
-	ID       int
-	Name     string
-	Price    float64
-	Category string
+	Id          int
+	Name        string
+	Price       float64
+	Stock       int
+	Description string
+	Created_at  time.Time
+	Updated_At  time.Time
 }
+
+// func FecthData(path string) ([]MenuItem, error) {
+// 	resp, err := http.Get("https://raw.githubusercontent.com/ariekas/koda-b4-golang-weekly-data/refs/heads/main/dataProduct.json")
+
+// 	if err != nil {
+// 		fmt.Println("Error: Failed to Fecth data")
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, err := io.ReadAll(
+// 		resp.Body,
+// 	)
+
+// 	var menus []MenuItem
+
+// 	if err != nil {
+// 		fmt.Println("Failed to raid body")
+// 	}
+
+// 	err = json.Unmarshal(body, &menus)
+// 	if err != nil {
+// 		fmt.Println("Failed to converd data")
+// 	}
+
+// 	os.WriteFile(path, body, 0644)
+
+// 	fmt.Println("Data berhasil disimpan ke:", path)
+// 	return menus, nil
+// }
+
+// func GetData() ([]MenuItem, error) {
+// 	// Menuju file temporary
+// 	tempDir := os.TempDir()
+// 	// Membaca file temporary apakah ada file data.json
+// 	getData := filepath.Join(tempDir, "data.json")
+
+// 	// Membaca waktu file data.json dibuat pertama kali
+// 	createAt, err := os.Stat(getData)
+
+// 	// data.json nya ada
+// 	if err == nil {
+// 		// menghitung sudah berapa lama durasi waktu sejak file data.json
+// 		getCreateAt := time.Since(createAt.ModTime())
+// 		if getCreateAt >= time.Duration(utils.Time()) {
+// 			return FecthData(getData)
+// 		} else {
+// 			// Membaca file data.json
+// 			data, err := os.ReadFile(getData)
+// 			if err != nil {
+// 				return nil, fmt.Errorf("failed to read cached data: %v", err)
+// 			}
+
+// 			var menus []MenuItem
+// 			// Mengubah file json menjadi slice
+// 			json.Unmarshal(data, &menus)
+// 			return menus, nil
+// 		}
+// 	}
+
+// 	// data.json nya tidak ada
+// 	return FecthData(getData)
+// }
+
+func GetData() []MenuItem {
+
+	godotenv.Load()
+
+	conn, err := pgx.Connect(context.Background(), os.Getenv("DATABASE_URL"))
+	if err != nil {
+		fmt.Println("Error: Error conncect to database")
+	}
+
+	defer conn.Close(context.Background())
+
+	rows, err := conn.Query(context.Background(),
+		`
+SELECT id, name, price, stock, description, created_at, updated_at
+FROM product
+`)
+
+	if err != nil {
+		fmt.Println("error map database")
+	}
+
+	products, err := pgx.CollectRows(rows, pgx.RowToStructByName[MenuItem])
+
+	if err != nil {
+		fmt.Println("Error :  Failed to map product")
+	}
+
+	return products
+}
+
 type Order struct {
 	Item     MenuItem
 	Quantity int

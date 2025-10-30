@@ -24,11 +24,7 @@ func Print (s ShowData, i int){
 // Method
 func (d *Db) OrderService() {
 	var choise, quantity int
-	var menus, error = data.GetData()
-
-	if error != nil {
-		fmt.Println("Error: Failed to getting data product")
-	}
+	var menus = data.GetData()
 
 	for {
 		fmt.Print("\x1bc")
