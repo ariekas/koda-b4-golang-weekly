@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
-	"weekly/data"
-	"weekly/src/service"
+	"weekly/internal/model"
+	"weekly/internal/service"
 )
 
 func main() {
@@ -17,10 +17,9 @@ func main() {
 		}
 	}()
 
-	// Var untuk mengambil struct Db dari package service
-	var d *service.Db = &service.Db{
-		Transactions: []data.Transaction{},
-		Orders:       []data.Order{},
+	db := &model.Db{
+		Transactions: []model.Transaction{},
+		Orders:       []model.Order{},
 	}
 	for {
 		fmt.Print("\x1bc")
@@ -38,9 +37,9 @@ func main() {
 		fmt.Scan(&input)
 		switch input {
 		case "1":
-			d.OrderService()
+			service.OrderService(db)
 		case "2":
-			d.HistoryOrder()
+			service.HistoryOrder(db)
 		// case "3":
 		// 	service.Opsion()
 		case "0":

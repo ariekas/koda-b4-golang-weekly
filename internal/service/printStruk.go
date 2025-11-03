@@ -2,10 +2,10 @@ package service
 
 import (
 	"fmt"
-	"weekly/data"
+	"weekly/internal/model"
 )
 
-func PrintStruk(transaction data.Transaction) {
+func PrintStruk(transaction model.Transaction) {
 	fmt.Println("========== STRUK PEMBELIAN ==========")
 	fmt.Printf("Order ID : %s\nNama     : %s\nTanggal  : %s\n",
 		transaction.OrderID, transaction.Custemer, transaction.DateOrder.Format("02-Jan-2006 15:04"))
